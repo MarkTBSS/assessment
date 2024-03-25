@@ -1,11 +1,12 @@
 package main
 
 import (
-	"fmt"
+	"database/sql"
 	"log"
 	"os"
 
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -14,6 +15,21 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	test := os.Getenv("ENVIRONMENT")
-	fmt.Println(test)
+	database, err := sql.Open("postgres", os.Getenv("CONNECTION_STRING"))
+	if err != nil {
+		log.Fatal("Connect to database error", err)
+	}
+	defer database.Close()
+	createTable := `CREATE TABLE IF NOT EXISTS expenses (
+		id SERIAL PRIMARY KEY,
+		title TEXT,
+		amount INT,
+		note TEXT,
+		tags TEXT[]
+	);`
+	_, err = database.Exec(createTable)
+
+	if err != nil {
+		log.Fatal("can't create table", err)
+	}
 }
