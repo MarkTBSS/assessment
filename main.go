@@ -3,8 +3,8 @@ package main
 import (
 	"database/sql"
 	"log"
-	"os"
 
+	"github.com/MarkTBSS/assessment/databases"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
@@ -15,7 +15,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	database, err := sql.Open("postgres", os.Getenv("CONNECTION_STRING"))
+	database, err := sql.Open("postgres", databases.DatabaseURL())
 	if err != nil {
 		log.Fatal("Connect to database error", err)
 	}
